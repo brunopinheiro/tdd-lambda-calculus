@@ -17,25 +17,25 @@ const FALSE = (_) => (b) => b;
 const IF = (s) => (t) => (f) => s(t)(f);
 
 // lambda calculus is too abstract. we're going to cheat a little so we see the results
-const test_truth = (s) => IF(s)("√")("X");
-const test_false = (s) => IF(s)("X")("√");
+const test_truth = (title, s) => console.log(IF(s)("√")("X"), title);
+const test_false = (title, s) => console.log(IF(s)("X")("√"), title);
 
-console.log(test_truth(TRUE), "test truth");
-console.log(test_false(FALSE), "test false");
+test_truth("test truth", TRUE);
+test_false("test false", FALSE);
 
 // defining zero
 const ZERO = TRUE;
 const IS_ZERO = (n) => n;
 
-console.log(test_truth(IS_ZERO(ZERO)), "zero is zero");
+test_truth("zero is zero", IS_ZERO(ZERO));
 
 // 2. for every natural number x, x = x. That is, equality is reflexive.
 const EQUAL = (_) => (_) => TRUE;
 
-console.log(test_truth(EQUAL(ZERO)(ZERO)), "zero equals zero");
+test_truth("zero equals zero", EQUAL(ZERO)(ZERO));
 
 // 6. For every natural number n, S(n) is a natural number. That is, the natural numbers are closed under S.
 // 7. For all natural numbers m and n, if S(m) = S(n), then m = n. That is, S is an injection.
 const S = (n) => n;
 
-console.log(test_truth(EQUAL(S(ZERO))(S(ZERO))), "S(0) == S(0)");
+test_truth("S(0) == S(0)", EQUAL(S(ZERO))(S(ZERO)));
