@@ -73,6 +73,16 @@ const ADD = (a) => (b) => IF(IS_ZERO(a))(
     )
 )
 
+const SUB = (a) => (b) => IF(IS_ZERO(a))(
+    ZERO
+)(
+    IF(IS_ZERO(b))(
+        a
+    )(
+        P_REC(SUB)(TUPLE(a)(b))
+    )
+)
+
 // For readability purposes:
 const NUMBER = (n) => {
     if(n == 0) return ZERO;
@@ -151,3 +161,11 @@ test_false("number 2 != number 1", EQUAL(N2)(N1));
 test_truth("0 + 0 == 0", EQUAL(N0)(ADD(N0)(N0)));
 test_truth("1 + 0 == 1", EQUAL(N1)(ADD(N1)(N0)));
 test_truth("3 + 2 == 5", EQUAL(N5)(ADD(N3)(N2)));
+
+// SUBTRACTION
+test_truth("0 - 0 == 0", EQUAL(N0)(SUB(N0)(N0)));
+test_truth("1 - 0 == 1", EQUAL(N1)(SUB(N1)(N0)));
+test_truth("4 - 2 == 2", EQUAL(N2)(SUB(N4)(N2)));
+// for simplicity, we're going to assume that 0 - n = 0
+test_truth("0 - 1 == 0", EQUAL(N0)(SUB(N0)(N1)));
+test_truth("1 - 3 == 0", EQUAL(N0)(SUB(N1)(N3)));
