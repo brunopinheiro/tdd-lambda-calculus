@@ -50,7 +50,6 @@ const SECOND = (t) => t(FALSE);
 test_truth("first of (true, false) is true", FIRST(TUPLE(TRUE)(FALSE)));
 test_false("second of (true, false) is false", SECOND(TUPLE(TRUE)(FALSE)));
 
-
 // defining zero
 const ZERO = TUPLE(TRUE)(TRUE);
 const IS_ZERO = (n) => FIRST(n);
@@ -93,6 +92,7 @@ test_truth("zero equals zero", EQUAL(ZERO)(ZERO));
 const S = (n) => TUPLE(FALSE)(n);
 
 test_truth("S(0) == S(0)", EQUAL(S(ZERO))(S(ZERO)));
+test_truth("S(S(0)) == S(S(0))", EQUAL(S(S(ZERO)))(S(S(ZERO))));
 
 // 8. For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
 test_false("S(0) != 0", EQUAL(S(ZERO))(ZERO));
@@ -111,3 +111,5 @@ test_false("S(0) != 0", EQUAL(S(ZERO))(ZERO));
 */
 
 test_false("S(S(0)) != S(0)", EQUAL(S(S(ZERO)))(S(ZERO)));
+
+test_false("S(S(S(0))) != S(S(0))", EQUAL(S(S(ZERO)))(S(ZERO)));
