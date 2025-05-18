@@ -20,44 +20,24 @@ const IF = (s) => (t) => (f) => s(t)(f);
 const test_truth = (title, s) => console.log(IF(s)("√")("X"), title);
 const test_false = (title, s) => console.log(IF(s)("X")("√"), title);
 
-test_truth("test truth", TRUE);
-test_false("test false", FALSE);
-
 const NOT = (s) => s(FALSE)(TRUE);
-
-test_truth("not FALSE => TRUE", NOT(FALSE));
-test_false("not TRUE => FALSE", NOT(TRUE));
-
 const XOR = (a) => (b) => a(NOT(b))(b);
-
-test_false("XOR TRUE TRUE", XOR(TRUE)(TRUE));
-test_truth("XOR TRUE FALSE", XOR(TRUE)(FALSE));
-test_truth("XOR FALSE TRUE", XOR(FALSE)(TRUE));
-test_false("XOR FALSE FALSE", XOR(FALSE)(FALSE));
-
 const OR = (a) => (b) => a(TRUE)(b);
-
-test_truth("OR TRUE TRUE", OR(TRUE)(TRUE));
-test_truth("OR TRUE FALSE", OR(TRUE)(FALSE));
-test_truth("OR FALSE TRUE", OR(FALSE)(TRUE));
-test_false("OR FALSE FALSE", OR(FALSE)(FALSE));
 
 // defining our first data structure
 const TUPLE = (a) => (b) => (c) => c(a)(b);
 const FIRST = (t) => t(TRUE);
 const SECOND = (t) => t(FALSE);
 
-test_truth("first of (true, false) is true", FIRST(TUPLE(TRUE)(FALSE)));
-test_false("second of (true, false) is false", SECOND(TUPLE(TRUE)(FALSE)));
-
 // defining zero
 const ZERO = TUPLE(TRUE)(TRUE);
 const IS_ZERO = (n) => FIRST(n);
 
-test_truth("zero is zero", IS_ZERO(ZERO));
-
 // predecessor
 const P = (n) => SECOND(n);
+
+// successor
+const S = (n) => TUPLE(FALSE)(n);
 
 // another cheat here, just to simplify readability of the code. 
 // improvement: use the Y-Combinator (https://medium.com/@ayanonagon/the-y-combinator-no-not-that-one-7268d8d9c46)
@@ -83,14 +63,44 @@ EQUAL = (a) => (b) => IF(IS_ZERO(a))(
     )
 );
 
+// For readability purposes:
+const NUMBER = (n) => {
+    if(n == 0) return ZERO;
+    return S(NUMBER(n-1));
+}
+
+// -- TEST CASES --
+
+// TEST ASSERTIONS
+test_truth("test truth", TRUE);
+test_false("test false", FALSE);
+
+// BOOLEANS
+test_truth("not FALSE => TRUE", NOT(FALSE));
+test_false("not TRUE => FALSE", NOT(TRUE));
+
+// XOR
+test_false("XOR TRUE TRUE", XOR(TRUE)(TRUE));
+test_truth("XOR TRUE FALSE", XOR(TRUE)(FALSE));
+test_truth("XOR FALSE TRUE", XOR(FALSE)(TRUE));
+test_false("XOR FALSE FALSE", XOR(FALSE)(FALSE));
+
+// OR
+test_truth("OR TRUE TRUE", OR(TRUE)(TRUE));
+test_truth("OR TRUE FALSE", OR(TRUE)(FALSE));
+test_truth("OR FALSE TRUE", OR(FALSE)(TRUE));
+test_false("OR FALSE FALSE", OR(FALSE)(FALSE));
+
+// TUPLE
+test_truth("first of (true, false) is true", FIRST(TUPLE(TRUE)(FALSE)));
+test_false("second of (true, false) is false", SECOND(TUPLE(TRUE)(FALSE)));
+
+// ZERO and IS_ZERO
+test_truth("zero is zero", IS_ZERO(ZERO));
 test_truth("zero equals zero", EQUAL(ZERO)(ZERO));
 
 // 6. For every natural number n, S(n) is a natural number. That is, the natural numbers are closed under S.
 // 7. For all natural numbers m and n, if S(m) = S(n), then m = n. That is, S is an injection.
-
-// successor
-const S = (n) => TUPLE(FALSE)(n);
-
 test_truth("S(0) == S(0)", EQUAL(S(ZERO))(S(ZERO)));
 test_truth("S(S(0)) == S(S(0))", EQUAL(S(S(ZERO)))(S(S(ZERO))));
 
@@ -109,7 +119,13 @@ test_false("S(0) != 0", EQUAL(S(ZERO))(ZERO));
     - replacing n one more time, we have "S(0) == 0"
     - if that's is true, we break axiom 8
 */
-
 test_false("S(S(0)) != S(0)", EQUAL(S(S(ZERO)))(S(ZERO)));
-
 test_false("S(S(S(0))) != S(S(0))", EQUAL(S(S(ZERO)))(S(ZERO)));
+
+// NUMBER
+test_truth("number 0 is zero", IS_ZERO(NUMBER(0)));
+test_truth("number 1 == S(0)", EQUAL(NUMBER(1))(S(ZERO)));
+test_truth("number 1 == number 1", EQUAL(NUMBER(1))(NUMBER(1)));
+test_truth("number 2 == S(S(0))", EQUAL(NUMBER(2))(S(S(ZERO))));
+test_false("number 2 != S(0)", EQUAL(NUMBER(2))(S(ZERO)));
+test_false("number 2 != number 1", EQUAL(NUMBER(2))(NUMBER(1)));
