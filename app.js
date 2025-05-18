@@ -22,3 +22,9 @@ const test_false = (s) => IF(s)("X")("√");
 
 console.log(test_truth(TRUE), "test truth");
 console.log(test_false(FALSE), "test false");
+
+// defining zero
+const ZERO = TRUE;
+const IS_ZERO = (n) => n;
+
+console.log(test_truth(IS_ZERO(ZERO)), "zero is zero");
