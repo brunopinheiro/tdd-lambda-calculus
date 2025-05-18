@@ -35,11 +35,12 @@ test_truth("XOR TRUE FALSE", XOR(TRUE)(FALSE));
 test_truth("XOR FALSE TRUE", XOR(FALSE)(TRUE));
 test_false("XOR FALSE FALSE", XOR(FALSE)(FALSE));
 
-// defining zero
-const ZERO = TRUE;
-const IS_ZERO = (n) => n;
+const OR = (a) => (b) => a(TRUE)(b);
 
-test_truth("zero is zero", IS_ZERO(ZERO));
+test_truth("OR TRUE TRUE", OR(TRUE)(TRUE));
+test_truth("OR TRUE FALSE", OR(TRUE)(FALSE));
+test_truth("OR FALSE TRUE", OR(FALSE)(TRUE));
+test_false("OR FALSE FALSE", OR(FALSE)(FALSE));
 
 // defining our first data structure
 const TUPLE = (a) => (b) => (c) => c(a)(b);
@@ -49,14 +50,47 @@ const SECOND = (t) => t(FALSE);
 test_truth("first of (true, false) is true", FIRST(TUPLE(TRUE)(FALSE)));
 test_false("second of (true, false) is false", SECOND(TUPLE(TRUE)(FALSE)));
 
+
+// defining zero
+const ZERO = TUPLE(TRUE)(TRUE);
+const IS_ZERO = (n) => FIRST(n);
+
+test_truth("zero is zero", IS_ZERO(ZERO));
+
+// predecessor
+const P = (n) => SECOND(n);
+
+// another cheat here, just to simplify readability of the code. 
+// improvement: use the Y-Combinator (https://medium.com/@ayanonagon/the-y-combinator-no-not-that-one-7268d8d9c46)
+// "recursion" for a given "two args" function
+const P_REC = (F) => (t) => (
+    IF( 
+        OR(IS_ZERO(FIRST(t)))(IS_ZERO(SECOND(t))) 
+    )(
+        FALSE
+    )(
+        F
+    ))(P(FIRST(t)))(P(SECOND(t)));
+
 // 2. for every natural number x, x = x. That is, equality is reflexive.
-const EQUAL = (a) => (b) => NOT(XOR(a)(b));
+let EQUAL = (_) => (_) => FALSE;
+EQUAL = (a) => (b) => IF(IS_ZERO(a))(
+    IS_ZERO(b)
+)(
+    IF(IS_ZERO(b))(
+        FALSE
+    )(
+        P_REC(EQUAL)(TUPLE(a)(b))
+    )
+);
 
 test_truth("zero equals zero", EQUAL(ZERO)(ZERO));
 
 // 6. For every natural number n, S(n) is a natural number. That is, the natural numbers are closed under S.
 // 7. For all natural numbers m and n, if S(m) = S(n), then m = n. That is, S is an injection.
-const S = (_) => FALSE;
+
+// successor
+const S = (n) => TUPLE(FALSE)(n);
 
 test_truth("S(0) == S(0)", EQUAL(S(ZERO))(S(ZERO)));
 
