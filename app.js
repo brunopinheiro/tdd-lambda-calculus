@@ -41,6 +41,14 @@ const IS_ZERO = (n) => n;
 
 test_truth("zero is zero", IS_ZERO(ZERO));
 
+// defining our first data structure
+const TUPLE = (a) => (b) => (c) => c(a)(b);
+const FIRST = (t) => t(TRUE);
+const SECOND = (t) => t(FALSE);
+
+test_truth("first of (true, false) is true", FIRST(TUPLE(TRUE)(FALSE)));
+test_false("second of (true, false) is false", SECOND(TUPLE(TRUE)(FALSE)));
+
 // 2. for every natural number x, x = x. That is, equality is reflexive.
 const EQUAL = (a) => (b) => NOT(XOR(a)(b));
 
@@ -54,3 +62,18 @@ test_truth("S(0) == S(0)", EQUAL(S(ZERO))(S(ZERO)));
 
 // 8. For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
 test_false("S(0) != 0", EQUAL(S(ZERO))(ZERO));
+
+/*
+    Should S(S(0)) == S(0) be true?
+    - let's consider that this is true
+    - let's assume S(0) = n
+    - so, S(n) = n
+    - considering axiom 6, we can say that n is a natural number
+    - now, let's apply axiom 7
+    - if "n = S(0)"", and "S(n) = n", then we can say that "S(n) = S(0)"
+    - if we apply axiom 8, we can say "n == 0"
+    - replacing n one more time, we have "S(0) == 0"
+    - if that's is true, we break axiom 8
+*/
+
+test_false("S(S(0)) != S(0)", EQUAL(S(S(ZERO)))(S(ZERO)));
