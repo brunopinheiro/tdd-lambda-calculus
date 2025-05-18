@@ -31,4 +31,4 @@ npm install
 npm run app
 ```
 
-Feedbacks are welcomed! :)
+Feedback is welcomed! :)
