@@ -28,3 +28,8 @@ const ZERO = TRUE;
 const IS_ZERO = (n) => n;
 
 console.log(test_truth(IS_ZERO(ZERO)), "zero is zero");
+
+// 2. for every natural number x, x = x. That is, equality is reflexive.
+const EQUAL = (_) => (_) => TRUE;
+
+console.log(test_truth(EQUAL(ZERO)(ZERO)), "zero equals zero");
