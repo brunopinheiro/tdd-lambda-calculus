@@ -52,8 +52,7 @@ const P_REC = (F) => (t) => (
     ))(P(FIRST(t)))(P(SECOND(t)));
 
 // 2. for every natural number x, x = x. That is, equality is reflexive.
-let EQUAL = (_) => (_) => FALSE;
-EQUAL = (a) => (b) => IF(IS_ZERO(a))(
+const EQUAL = (a) => (b) => IF(IS_ZERO(a))(
     IS_ZERO(b)
 )(
     IF(IS_ZERO(b))(
@@ -80,6 +79,24 @@ const SUB = (a) => (b) => IF(IS_ZERO(a))(
         a
     )(
         P_REC(SUB)(TUPLE(a)(b))
+    )
+)
+
+const MUL = (a) => (b) => IF(IS_ZERO(a))(
+    ZERO
+)(
+    IF(IS_ZERO(b))(
+        ZERO
+    )(
+        IF(IS_ZERO(P(a)))(
+            b
+        )(
+            IF(IS_ZERO(P(b)))(
+                a
+            )(
+               ADD(a)(P_REC(MUL)(TUPLE(S(a))(b)))
+            )
+        )
     )
 )
 
@@ -149,6 +166,7 @@ const N2 = NUMBER(2);
 const N3 = NUMBER(3);
 const N4 = NUMBER(4);
 const N5 = NUMBER(5);
+const N6 = NUMBER(6);
 
 test_truth("number 0 is zero", IS_ZERO(N0));
 test_truth("number 1 == S(0)", EQUAL(N1)(S(ZERO)));
@@ -169,3 +187,11 @@ test_truth("4 - 2 == 2", EQUAL(N2)(SUB(N4)(N2)));
 // for simplicity, we're going to assume that 0 - n = 0
 test_truth("0 - 1 == 0", EQUAL(N0)(SUB(N0)(N1)));
 test_truth("1 - 3 == 0", EQUAL(N0)(SUB(N1)(N3)));
+
+// MULTIPLICATION
+test_truth("0 * 0 == 0", EQUAL(N0)(MUL(N0)(N0)));
+test_truth("5 * 0 == 0", EQUAL(N0)(MUL(N5)(N0)));
+test_truth("0 * 5 == 0", EQUAL(N0)(MUL(N0)(N5)));
+test_truth("1 * 4 == 4", EQUAL(N4)(MUL(N1)(N4)));
+test_truth("4 * 1 == 4", EQUAL(N4)(MUL(N4)(N1)));
+test_truth("2 * 3 == 6", EQUAL(N6)(MUL(N2)(N3)));
