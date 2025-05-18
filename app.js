@@ -23,6 +23,18 @@ const test_false = (title, s) => console.log(IF(s)("X")("√"), title);
 test_truth("test truth", TRUE);
 test_false("test false", FALSE);
 
+const NOT = (s) => s(FALSE)(TRUE);
+
+test_truth("not FALSE => TRUE", NOT(FALSE));
+test_false("not TRUE => FALSE", NOT(TRUE));
+
+const XOR = (a) => (b) => a(NOT(b))(b);
+
+test_false("XOR TRUE TRUE", XOR(TRUE)(TRUE));
+test_truth("XOR TRUE FALSE", XOR(TRUE)(FALSE));
+test_truth("XOR FALSE TRUE", XOR(FALSE)(TRUE));
+test_false("XOR FALSE FALSE", XOR(FALSE)(FALSE));
+
 // defining zero
 const ZERO = TRUE;
 const IS_ZERO = (n) => n;
@@ -30,12 +42,15 @@ const IS_ZERO = (n) => n;
 test_truth("zero is zero", IS_ZERO(ZERO));
 
 // 2. for every natural number x, x = x. That is, equality is reflexive.
-const EQUAL = (_) => (_) => TRUE;
+const EQUAL = (a) => (b) => NOT(XOR(a)(b));
 
 test_truth("zero equals zero", EQUAL(ZERO)(ZERO));
 
 // 6. For every natural number n, S(n) is a natural number. That is, the natural numbers are closed under S.
 // 7. For all natural numbers m and n, if S(m) = S(n), then m = n. That is, S is an injection.
-const S = (n) => n;
+const S = (_) => FALSE;
 
 test_truth("S(0) == S(0)", EQUAL(S(ZERO))(S(ZERO)));
+
+// 8. For every natural number n, S(n) = 0 is false. That is, there is no natural number whose successor is 0.
+test_false("S(0) != 0", EQUAL(S(ZERO))(ZERO));
