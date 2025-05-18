@@ -63,6 +63,16 @@ EQUAL = (a) => (b) => IF(IS_ZERO(a))(
     )
 );
 
+const ADD = (a) => (b) => IF(IS_ZERO(a))(
+    b
+)(
+    IF(IS_ZERO(b))(
+        a
+    )(
+        P_REC(ADD)(TUPLE(a)(S(S(b))))
+    )
+)
+
 // For readability purposes:
 const NUMBER = (n) => {
     if(n == 0) return ZERO;
@@ -123,9 +133,21 @@ test_false("S(S(0)) != S(0)", EQUAL(S(S(ZERO)))(S(ZERO)));
 test_false("S(S(S(0))) != S(S(0))", EQUAL(S(S(ZERO)))(S(ZERO)));
 
 // NUMBER
-test_truth("number 0 is zero", IS_ZERO(NUMBER(0)));
-test_truth("number 1 == S(0)", EQUAL(NUMBER(1))(S(ZERO)));
-test_truth("number 1 == number 1", EQUAL(NUMBER(1))(NUMBER(1)));
-test_truth("number 2 == S(S(0))", EQUAL(NUMBER(2))(S(S(ZERO))));
-test_false("number 2 != S(0)", EQUAL(NUMBER(2))(S(ZERO)));
-test_false("number 2 != number 1", EQUAL(NUMBER(2))(NUMBER(1)));
+const N0 = NUMBER(0);
+const N1 = NUMBER(1);
+const N2 = NUMBER(2);
+const N3 = NUMBER(3);
+const N4 = NUMBER(4);
+const N5 = NUMBER(5);
+
+test_truth("number 0 is zero", IS_ZERO(N0));
+test_truth("number 1 == S(0)", EQUAL(N1)(S(ZERO)));
+test_truth("number 1 == number 1", EQUAL(N1)(N1));
+test_truth("number 2 == S(S(0))", EQUAL(N2)(S(S(ZERO))));
+test_false("number 2 != S(0)", EQUAL(N2)(S(ZERO)));
+test_false("number 2 != number 1", EQUAL(N2)(N1));
+
+// ADDITION
+test_truth("0 + 0 == 0", EQUAL(N0)(ADD(N0)(N0)));
+test_truth("1 + 0 == 1", EQUAL(N1)(ADD(N1)(N0)));
+test_truth("3 + 2 == 5", EQUAL(N5)(ADD(N3)(N2)));
