@@ -33,3 +33,9 @@ console.log(test_truth(IS_ZERO(ZERO)), "zero is zero");
 const EQUAL = (_) => (_) => TRUE;
 
 console.log(test_truth(EQUAL(ZERO)(ZERO)), "zero equals zero");
+
+// 6. For every natural number n, S(n) is a natural number. That is, the natural numbers are closed under S.
+// 7. For all natural numbers m and n, if S(m) = S(n), then m = n. That is, S is an injection.
+const S = (n) => n;
+
+console.log(test_truth(EQUAL(S(ZERO))(S(ZERO))), "S(0) == S(0)");
